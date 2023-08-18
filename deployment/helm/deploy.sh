@@ -17,7 +17,7 @@ EDC_VAULT_NAME="${EDC_NAMESPACE}-vault"
 kubectl delete namespace "${EDC_NAMESPACE}" || true
 kubectl create namespace "${EDC_NAMESPACE}"
 
-kubectl -n "${EDC_NAMESPACE}" create secret docker-registry creds \
+kubectl -n "${EDC_NAMESPACE}" create secret docker-registry github-registry-auth \
     --docker-server=ghcr.io \
     --docker-username=$GITHUB_USER \
     --docker-password=$GITHUB_TOKEN
@@ -30,13 +30,22 @@ sleep 10
 kubectl wait --for=jsonpath='{.status.phase}'=Running pod "${EDC_VAULT_NAME}-0" -n "${EDC_NAMESPACE}" --timeout=120s
 
 # Initialize Vault
-kubectl exec -n "${EDC_NAMESPACE}" -it "${EDC_VAULT_NAME}-0" -- vault operator init -key-shares=1 -key-threshold=1 -format=json > vault-keys.json
+kubectl exec -n "${EDC_NAMESPACE}" -it "${EDC_VAULT_NAME}-0" -- vault operator init -key-shares=1 -key-threshold=1 -format=json > "${EDC_NAMESPACE}-vault-keys.json"
+
+EDC_VAULT_ROOT_TOKEN=$(cat "${EDC_NAMESPACE}-vault-keys.json" | jq -r '.root_token')
+
+echo "edc:
+  vault:
+    hashicorp:
+      url: http://${EDC_VAULT_NAME}:8200
+      token: ${EDC_VAULT_ROOT_TOKEN}" > "${EDC_NAMESPACE}.yaml"
+
 
 # Unseal Vault
-kubectl exec -n "${EDC_NAMESPACE}" -it "${EDC_VAULT_NAME}-0" -- vault operator unseal $(jq -r ".unseal_keys_b64[]" vault-keys.json)
+kubectl exec -n "${EDC_NAMESPACE}" -it "${EDC_VAULT_NAME}-0" -- vault operator unseal $(jq -r ".unseal_keys_b64[]" "${EDC_NAMESPACE}-vault-keys.json")
 
 # Login to Vault
-kubectl exec -n "${EDC_NAMESPACE}" -it "${EDC_VAULT_NAME}-0" -- vault login $(jq -r ".root_token" vault-keys.json)
+kubectl exec -n "${EDC_NAMESPACE}" -it "${EDC_VAULT_NAME}-0" -- vault login $(jq -r ".root_token" "${EDC_NAMESPACE}-vault-keys.json")
 
 # Enable KV secrets engine
 kubectl exec -n "${EDC_NAMESPACE}" -it "${EDC_VAULT_NAME}-0" -- vault secrets enable -version=2 -path=secret kv
@@ -44,12 +53,12 @@ kubectl exec -n "${EDC_NAMESPACE}" -it "${EDC_VAULT_NAME}-0" -- vault secrets en
 # Add secrets to Vault
 kubectl exec -n "${EDC_NAMESPACE}" -it "${EDC_VAULT_NAME}-0" -- vault kv put secret/edc.ionos.access.key content=$EDC_S3_ACCESS_KEY
 kubectl exec -n "${EDC_NAMESPACE}" -it "${EDC_VAULT_NAME}-0" -- vault kv put secret/edc.ionos.secret.key content=$EDC_S3_SECRET_KEY
-kubectl exec -n "${EDC_NAMESPACE}" -it "${EDC_VAULT_NAME}-0" -- vault kv put secret/edc.ionos.endpoint content=$EDC_IONOS_ENDPOINT
-kubectl exec -n "${EDC_NAMESPACE}" -it "${EDC_VAULT_NAME}-0" -- vault kv put secret/edc.ionos.token content=$EDC_IONOS_TOKEN
+kubectl exec -n "${EDC_NAMESPACE}" -it "${EDC_VAULT_NAME}-0" -- vault kv put secret/edc.ionos.endpoint content=$EDC_S3_ENDPOINT
+kubectl exec -n "${EDC_NAMESPACE}" -it "${EDC_VAULT_NAME}-0" -- vault kv put secret/edc.ionos.token content=$EDC_S3_IONOS_TOKEN
 kubectl exec -n "${EDC_NAMESPACE}" -it "${EDC_VAULT_NAME}-0" -- vault kv put secret/possible.catalog.jwt.token content=$EDC_CATALOG_JWT_TOKEN
 
 
-helm install -n "${EDC_NAMESPACE}" possible-x-edc possible-x-edc/
+helm install -n "${EDC_NAMESPACE}" -f "${EDC_NAMESPACE}.yaml" possible-x-edc possible-x-edc/
 
 sleep 20
 
