@@ -1,13 +1,6 @@
 name: Deploy Provider
 on:
-  workflow_run:
-    workflows: ["Create and publish Docker images"]
-    types:
-      - completed
   workflow_dispatch:
-    inputs:
-      tags:
-        description: 'Test scenario tags'
 env:
   REGISTRY: ghcr.io
   NAMESPACE: possible-x
