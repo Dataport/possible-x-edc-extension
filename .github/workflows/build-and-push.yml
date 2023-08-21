@@ -1,7 +1,7 @@
-name: Create and publish Docker images
+name: Create and publish Docker images and Deploy
 
 on:
-  workflow_call:
+  workflow_dispatch:
 
 env:
   REGISTRY: ghcr.io
@@ -12,7 +12,7 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: read
-#      packages: write
+      packages: write
 
     steps:
       - name: Checkout repository
@@ -70,3 +70,12 @@ jobs:
 #          ${{ env.REGISTRY }}/${{ env.NAMESPACE }}/connector@${{ steps.build_and_push_connector.outputs.digest }}
 #        env:
 #          COSIGN_PASSWORD: ${{ secrets.SIGNING_SECRET_PASSWORD }}
+  deployment:
+    runs-on: 'ubuntu-latest'
+    steps:
+      - name: 'Invoke Kubectl'
+        uses: actions-hub/kubectl@master
+        env:
+          KUBE_CONFIG: ${{ secrets.KUBECONFIG }}
+        with:
+          args: "set image deployment/${{env.PROVIDER_DEPLOYMENT_NAME}} -n ${{ vars.PROVIDER_NS }} possible-x-edc=${{ env.REGISTRY }}/possible-x/connector:${{ github.sha }} "
