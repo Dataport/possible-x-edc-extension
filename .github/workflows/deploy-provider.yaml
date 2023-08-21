@@ -13,6 +13,8 @@ env:
   NAMESPACE: possible-x
   PROVIDER_DEPLOYMENT_NAME: dev-provider-possible-x-edc
 jobs:
+  call-workflow:
+    uses: ./.github/workflows/build-and-push.yml
   deployment:
     runs-on: 'ubuntu-latest'
     steps:

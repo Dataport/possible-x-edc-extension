@@ -1,6 +1,7 @@
 name: Create and publish Docker images
 
-on: [push]
+on:
+  workflow_call:
 
 env:
   REGISTRY: ghcr.io
