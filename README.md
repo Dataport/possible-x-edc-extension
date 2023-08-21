@@ -1,6 +1,11 @@
 # POSSIBLE Extension
 
-This document explains how to run an EDC with the `POSSIBLE-X` and the `IONOS S3` extensions.
+This repository contains the source code and deployment file for the `POSSIBLE-X-EDC-EXTENSION`.
+
+## Description
+
+The `POSSIBLE-X-EDC-EXTENSION` is an EDC extension, which integration the [POSSIBLE-X Catalog](https://github.com/POSSIBLE-X/possible-x-catalog-ui) with the EDC Catalog. It does so by listening for the `ContractDefinitionCreated` event in EDC and then registering the contract in the POSSIBLE-X Catalog. It extract the fields `contractDefinitionId`, `assetId` and `policyId` from EDC ContractDefinition and constructs an [RDF graph](extension/RDF.md), which is then sent to the POSSIBLE-X Catalog.
+
 
 ## Requirements
 
