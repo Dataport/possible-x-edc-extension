@@ -1,0 +1,54 @@
+edc:
+  ionos:
+    accessKey: 00ac96143c050df64acf
+    endpoint: s3-eu-central-1.ionoscloud.com
+    secretKey: tMw6vUWuqlMxdPxIskad7y+PlwvTYjeGUu8OSOhG
+    token: eyJ0eXAiOiJKV1QiLCJraWQiOiI3ZjM2NmE1Yy01MzI1LTQxODMtYjBjMS1lYmVjMTU1OGZlMmMiLCJhbGciOiJSUzI1NiJ9.eyJpc3MiOiJpb25vc2Nsb3VkIiwiaWF0IjoxNjkwNTU4OTUzLCJjbGllbnQiOiJVU0VSIiwiaWRlbnRpdHkiOnsiaXNQYXJlbnQiOmZhbHNlLCJjb250cmFjdE51bWJlciI6MzE5NjU2MzQsInJvbGUiOiJvd25lciIsInJlZ0RvbWFpbiI6Imlvbm9zLmRlIiwicmVzZWxsZXJJZCI6MSwidXVpZCI6IjNmOWVmZWNhLTM2MTQtNGU1Zi1iNzk3LTBkNWM0MGIzMjU3ZSIsInByaXZpbGVnZXMiOlsiREFUQV9DRU5URVJfQ1JFQVRFIiwiU05BUFNIT1RfQ1JFQVRFIiwiSVBfQkxPQ0tfUkVTRVJWRSIsIk1BTkFHRV9EQVRBUExBVEZPUk0iLCJBQ0NFU1NfQUNUSVZJVFlfTE9HIiwiUENDX0NSRUFURSIsIkFDQ0VTU19TM19PQkpFQ1RfU1RPUkFHRSIsIkJBQ0tVUF9VTklUX0NSRUFURSIsIkNSRUFURV9JTlRFUk5FVF9BQ0NFU1MiLCJLOFNfQ0xVU1RFUl9DUkVBVEUiLCJGTE9XX0xPR19DUkVBVEUiLCJBQ0NFU1NfQU5EX01BTkFHRV9NT05JVE9SSU5HIiwiQUNDRVNTX0FORF9NQU5BR0VfQ0VSVElGSUNBVEVTIiwiTUFOQUdFX0RCQUFTIiwiQUNDRVNTX0FORF9NQU5BR0VfRE5TIiwiTUFOQUdFX1JFR0lTVFJZIl19LCJleHAiOjE3MjIxMTY1NTN9.GkpG9j9U6CfsGZZ8jptRtA8wOIukcwo4hvWQb25y7MCmBm_cmqwP3TqqziN0LTGDkZ54qNCwvd7NxhyZMVWWUwccacpLKfB-9grnWJ657GPpNqZA7JPlIpvUJoVF3TA8o5_ZXr-xwn2X4C7BzZet-oaOR-0ccFCQZwy_psKAurFqnc25dQBnpVScj0qT2gZJzIAfkhGugPE67Iugx_PJ7bm9E8Tki-tvSjopNjWpc6mRFtpJ92L7D3zvzAJr0v-bnH4hwzHYnH-SqLsgdIf956YydGtCSOIURgKSafENKG--5dfpShrTd8ZS0O8XmLisliK2pSZQQinHN5Mq9JUjCg
+  vault:
+    hashicorp:
+      token: s.GElkks7uyDVQ2nCscE6tbgCc
+      url: http://daiwai-posx-provider-vault:8200
+  dataplane:
+    token:
+      validation:
+        endpoint: https://provider.dev.possible-x.de
+  dsp:
+    callback:
+      address: https://provider.dev.possible-x.de/protocol
+service:
+  type: ClusterIP
+possible:
+  catalog:
+    jwt:
+      token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyZWFsbV9hY2Nlc3MiOnsicm9sZXMiOlsib3BlcmF0b3IiXX19.lMkYKTViVNVPFH49ntdkruLe5EaWRUYt1YL-1Y7b0gc
+ingress:
+  enabled: true
+  hosts:
+    - host: provider.dev.possible-x.de
+      paths:
+        - path: /api
+          portNumber: 8181
+          pathType: Prefix
+
+        - path: /management
+          portNumber: 8182
+          pathType: Prefix
+
+        - path: /protocol
+          portNumber: 8281
+          pathType: Prefix
+
+        - path: /public
+          portNumber: 8282
+          pathType: Prefix
+
+        - path: /control
+          portNumber: 8283
+          pathType: Prefix
+
+  tls:
+    - hosts:
+        - provider.dev.possible-x.de
+      secretName: provider-tls
+imagePullSecrets:
+  - name: "github-registry-auth"
