@@ -2,16 +2,23 @@ name: Deploy Provider
 on:
   workflow_dispatch:
     inputs:
-      logLevel:
-        description: 'Log level'
-        required: true
-        default: 'warning'
       tags:
         description: 'Test scenario tags'
 jobs:
-  printInputs:
-    runs-on: ubuntu-latest
+  deployment:
+    runs-on: 'ubuntu-latest'
     steps:
-      - run: |
-          echo "Log level: ${{ github.event.inputs.logLevel }}"
-          echo "Tags: ${{ github.event.inputs.tags }}"
+      - uses: actions/checkout@v1
+
+      - name: 'Deploy'
+        uses: 'deliverybot/helm@v1'
+        with:
+          release: 'nginx'
+          namespace: '${{env.PROVIDER_NS}}'
+          chart: 'app'
+          token: '${{ github.token }}'
+          values: |
+            name: test-nginx
+          value-files:
+        env:
+          KUBECONFIG_FILE: '${{ secrets.KUBECONFIG }}'
