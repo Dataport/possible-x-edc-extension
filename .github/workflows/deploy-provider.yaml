@@ -6,7 +6,7 @@ on:
         description: 'Test scenario tags'
 env:
   REGISTRY: ghcr.io
-  NAMESPACE: POSSIBLE-X
+  NAMESPACE: possible-x
   PROVIDER_DEPLOYMENT_NAME: dev-provider-possible-x-edc
 jobs:
   deployment:
