@@ -1,5 +1,9 @@
 name: Deploy Provider
 on:
+  workflow_run:
+    workflows: ["Create and publish Docker images"]
+    types:
+      - completed
   workflow_dispatch:
     inputs:
       tags:
