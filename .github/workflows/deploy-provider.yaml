@@ -19,7 +19,7 @@ jobs:
         env:
           KUBE_CONFIG: ${{ secrets.KUBECONFIG }}
         with:
-          args: "kubectl create secret docker-registry github-registry-auth -n ${{ vars.PROVIDER_NS }} --docker-server=https://${{env.REGISTRY}} --docker-username=${{ github.actor }} --docker-password=${{ secrets.GITHUB_TOKEN }} --docker-email=admin@possible-x.de"
+          args: "create secret docker-registry github-registry-auth -n ${{ vars.PROVIDER_NS }} --docker-server=https://${{env.REGISTRY}} --docker-username=${{ github.actor }} --docker-password=${{ secrets.GITHUB_TOKEN }} --docker-email=admin@possible-x.de"
 
       - name: 'Deploy'
         uses: actions-hub/kubectl@master
