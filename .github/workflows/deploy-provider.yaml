@@ -4,6 +4,10 @@ on:
     inputs:
       tags:
         description: 'Test scenario tags'
+env:
+  REGISTRY: ghcr.io
+  NAMESPACE: POSSIBLE-X
+  PROVIDER_DEPLOYMENT_NAME: dev-provider-possible-x-edc
 jobs:
   deployment:
     runs-on: 'ubuntu-latest'
