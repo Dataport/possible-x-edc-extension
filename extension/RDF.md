@@ -36,13 +36,13 @@
 			a               
 			dcat:distribution ;         
 			dct:license     <http://dcat-ap.de/def/licenses/gfdl> ;         
-			dcat:accessURL  <http://xxxxxxxx:9192/api/v1/data/assets/test-document_company2> .  
+			dcat:accessURL  <http://85.215.202.146:9192/api/v1/data/assets/test-document_company2> .  
 			<https://possible.fokus.fraunhofer.de/set/data/test-dataset a   gax-trust-framework:DataResource , 
 			dcat:Dataset ;         
 			dct:description                 "With this dataset you can do this and that"@en ;         
 			dct:title                       "MultiInst Dataset"@en ;         
 			gax-trust-framework:containsPII                 false ;         
-			gax-trust-framework:exposedThrough                 <http://xxxxxxxx:8282/> ;         
+			gax-trust-framework:exposedThrough                 <http://85.215.202.146:8282/> ;         
 			gax-trust-framework:producedBy  <https://piveau.io/set/resource/legal-person/some-legal-person-2> ;         
 			possible-x:assetId              "hackathonDataSet" ;
 			possible-x:contractOfferId      "igeneratemypolicyid" ;
