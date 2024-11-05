@@ -51,6 +51,7 @@ public class ClientClaimConstraintFunction<R extends Rule> implements AtomicCons
         String clientClaim = (String) contextData.getClaims().get(clientClaimName);
 
         if (clientClaim == null) {
+            monitor.info(format("Required claim %s not found.", clientClaimName));
             return false;
         }
 
